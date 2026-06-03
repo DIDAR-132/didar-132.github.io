@@ -53,32 +53,6 @@ body {
 }
 
     /* ─── CURSOR TRACER ─────────────────────────────── */
-    #cursor-dot {
-      position: fixed;
-      width: 12px; height: 12px;
-      background: var(--red);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width .15s, height .15s, background .15s;
-      mix-blend-mode: multiply;
-    }
-    #cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 2px solid var(--red);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: width .3s ease, height .3s ease, transform .08s ease, border-color .2s;
-      opacity: .6;
-    }
-    body:has(a:hover) #cursor-dot,
-    body:has(button:hover) #cursor-dot { width: 20px; height: 20px; background: var(--red-dark); }
-    body:has(a:hover) #cursor-ring,
-    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; }
 
     /* ─── COVER PHOTO ───────────────────────────────── */
     /*
