@@ -42,17 +42,35 @@ body {
   min-height: 100vh;
   cursor: none;
 }
-  
-  /* Set the size of the dots here (e.g., 20px by 20px) */
-  background-size: 20px 20px, auto, auto, auto, auto;
- { 
-  color: var(--text-1);
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  min-height: 100vh;
-  cursor: none;
-}
+
 
     /* ─── CURSOR TRACER ─────────────────────────────── */
+    #cursor-dot {
+      position: fixed;
+      width: 12px; height: 12px;
+      background: var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .15s, height .15s, background .15s;
+      mix-blend-mode: multiply;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width .3s ease, height .3s ease, transform .08s ease, border-color .2s;
+      opacity: .6;
+    }
+    body:has(a:hover) #cursor-dot,
+    body:has(button:hover) #cursor-dot { width: 20px; height: 20px; background: var(--red-dark); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; }
 
     /* ─── COVER PHOTO ───────────────────────────────── */
     /*
@@ -539,7 +557,6 @@ body {
     dot.style.top  = mouseY + 'px';
   });
 
-  /* Smooth ring follow */
   (function animateRing() {
     ringX += (mouseX - ringX) * 0.12;
     ringY += (mouseY - ringY) * 0.12;
@@ -548,7 +565,6 @@ body {
     requestAnimationFrame(animateRing);
   })();
 
-  /* Hide native cursor over iframes / external embeds */
   document.addEventListener('mouseleave', () => {
     dot.style.opacity  = '0';
     ring.style.opacity = '0';
@@ -557,6 +573,7 @@ body {
     dot.style.opacity  = '1';
     ring.style.opacity = '.6';
   });
+
 </script>
 
 </body>
