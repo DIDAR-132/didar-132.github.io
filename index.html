@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Didarul Islam · Link in Bio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;500;700&display=swap');
+
+    :root {
+      --bg:        #f5f0ee;
+      --surface:   #ede8e5;
+      --red:       #320465;
+      --red-dark:  #4b00cd;
+      --red-muted: #e2dbe6;
+      --text-1:    #270542;
+      --text-2:    #60506b;
+      --text-3:    #6b506b;
+      --border:    #5a337a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  /* The "Map" Grid Texture + Your existing grain */
+  background-image: 
+    /* 1. Thin Red Grid Lines */
+    linear-gradient(rgba(105, 43, 192, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(105, 43, 192, 0.1) 1px, transparent 1px),
+    /* 2. Existing Grain Overlay */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  
+  /* Size of the grid squares (adjust 40px to make them larger/smaller) */
+  background-size: 40px 40px, 40px 40px, auto;
+  
+  /* Ensures the grid covers everything and stays fixed while scrolling */
+  background-attachment: fixed;
+
+  color: var(--text-1);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  cursor: none;
+}
+
+
+    /* ─── CURSOR TRACER ─────────────────────────────── */
+   /* ─── CURSOR TRACER ─────────────────────────────── */
+    #cursor-dot {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: background .15s;
+      mix-blend-mode: multiply;
+      will-change: transform; /* Forces GPU acceleration */
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 27px; height: 27px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: border-color .2s;
+      opacity: .6;
+      will-change: transform; /* Forces GPU acceleration */
+    }
+    body:has(a:hover) #cursor-dot,
+    body:has(button:hover) #cursor-dot { width: 20px; height: 20px; background: var(--red-dark); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; }
+
+    /* ─── COVER PHOTO ───────────────────────────────── */
+    /*
+      HOW TO ADD A COVER PHOTO:
+      Set background-image on .cover-wrap, e.g.:
+        background-image: url('YOUR_URL');
+        background-size: cover;
+        background-position: center top;
+      The cover ends at the exact midpoint of the avatar. No blur — clean edge.
+    */
+.cover-wrap {
+  width: 100%;
+  height: 150px; /* or your preferred height */
+  overflow: hidden;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+}
+
+.cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* This ensures the image covers the area without distortion */
+  object-position: center; /* This explicitly centers the image content */
+}
+    /* ─── PAGE LAYOUT ───────────────────────────────── */
+    .page {
+      max-width: 600px; margin: 0 auto;
+      padding: 0 20px 80px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    /* ─── PROFILE ───────────────────────────────────── */
+    .profile {
+      display: flex; flex-direction: column; align-items: center;
+      /* -44px = half avatar height (88px/2) so the midpoint of the DP
+         sits exactly on the cover's bottom edge — no blur needed */
+      gap: 12px; margin-top: -44px; margin-bottom: 24px;
+      position: relative; z-index: 2;
+      animation: fadeUp .6s cubic-bezier(.19,1,.22,1) both;
+    }
+
+    /*
+      AVATAR — HOW TO EMBED YOUR PHOTO:
+      Option A — Image URL:
+        <img src="YOUR_PHOTO_URL" alt="Didarul Islam" />
+      Option B — Base64 (for offline/self-contained use):
+        <img src="data:image/jpeg;base64,YOUR_BASE64_STRING" alt="Didarul Islam" />
+      The .avatar-wrap handles the circular crop automatically.
+    */
+    .avatar-wrap {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--red);
+      background: var(--surface);
+    
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--bg);
+      flex-shrink: 0;
+    }
+    .avatar-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Placeholder shown when no image is set */
+    .avatar-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--red-muted);
+      color: var(--red);
+      font-size: 28px; font-weight: 700;
+      letter-spacing: -1px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+   .profile-name {
+  font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; /* Add/Update this line */
+  font-size: 28px; 
+  font-weight: 800; 
+  letter-spacing: -0.5px;
+  color: var(--text-1);
+  text-transform: uppercase;
+  animation: fadeUp .6s .07s cubic-bezier(.19,1,.22,1) both;
+}
+
+    .profile-handle {
+      font-size: 13px; color: var(--red); font-weight: 500;
+      letter-spacing: .04em;
+      animation: fadeUp .6s .12s cubic-bezier(.19,1,.22,1) both;
+    }
+
+    /* ─── BIO ───────────────────────────────────────── */
+    .bio {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      animation: fadeUp .6s .18s cubic-bezier(.19,1,.22,1) both;
+    }
+    .bio-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 8px;
+    }
+    .bio-text { font-size: 13px; color: var(--text-2); line-height: 1.75; }
+    .bio-text strong { color: var(--text-1); font-weight: 700; }
+    .bio-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .bio-tag {
+      font-size: 11px; font-weight: 500;
+      padding: 3px 10px; border-radius: 100px;
+      background: var(--red-muted);
+      border: 1px solid #d4b8b4;
+      color: var(--red-dark);
+    }
+
+    /* ─── LINKS ─────────────────────────────────────── */
+    .links { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+    .link-group { width: 100%; animation: fadeUp .6s both; }
+    .link-group:nth-child(1) { animation-delay: .24s; }
+    .link-group:nth-child(2) { animation-delay: .30s; }
+    .link-group:nth-child(3) { animation-delay: .36s; }
+    .link-group:nth-child(4) { animation-delay: .42s; }
+
+    /* CARD */
+    .link-card {
+      position: relative;
+      display: flex; align-items: center; gap: 14px;
+      padding: 15px 18px;
+      background: var(--red);
+      border: none;
+      border-radius: 14px;
+      text-decoration: none; color: #fff;
+      width: 100%; cursor: none;
+      transition: background .2s, transform .2s cubic-bezier(.19,1,.22,1);
+    }
+    .link-card:hover {
+      background: var(--red-dark);
+      transform: translateY(-3px);
+    }
+    .link-group.open .link-card {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    /*
+      CARD ICON — HOW TO CHANGE ICONS:
+      Each .card-icon contains an <svg> element.
+      To use a different icon:
+        1. Replace the entire <svg>…</svg> with your preferred SVG icon.
+        2. Or use an <img> tag inside .card-icon:
+             <img src="your-icon.svg" width="22" height="22" alt="" />
+        3. Or use a font icon (Font Awesome, etc.):
+             <i class="fa-brands fa-instagram" style="font-size:20px;color:#fff"></i>
+      Keep the .card-icon div wrapper — it handles sizing & background.
+    */
+    .card-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .2s;
+    }
+    .link-card:hover .card-icon { transform: scale(1.08) rotate(-4deg); }
+    .card-icon svg { width: 22px; height: 22px; }
+    .card-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+    .card-body { flex: 1; min-width: 0; text-align: left; }
+    .card-title { font-size: 15px; font-weight: 700; }
+    .card-sub   { font-size: 11.5px; opacity: .75; margin-top: 1px; }
+
+    .card-chevron, .card-arrow {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .3s, background .2s;
+    }
+    .link-group.open .card-chevron { transform: rotate(180deg); background: rgba(255,255,255,0.3); }
+    .link-card:hover .card-arrow   { transform: translateX(3px); }
+    .card-chevron svg, .card-arrow svg { width: 13px; height: 13px; }
+
+    /* SUB-LINKS */
+    .sub-links {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height .4s cubic-bezier(.19,1,.22,1), opacity .3s;
+    }
+    .link-group.open .sub-links { max-height: 400px; opacity: 1; }
+
+    .sub-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 18px;
+      text-decoration: none; color: var(--text-2);
+      border-top: 1px solid var(--border);
+      transition: background .15s, color .15s, padding-left .2s;
+      cursor: none;
+    }
+    .sub-link:first-child { border-top: none; }
+    .sub-link:hover { background: var(--red-muted); color: var(--red-dark); padding-left: 24px; }
+    .sub-link-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      background: var(--red); opacity: .5;
+    }
+    .sub-link:hover .sub-link-dot { opacity: 1; }
+    .sub-link-label  { font-size: 13px; font-weight: 600; flex: 1; color: var(--text-1); }
+    .sub-link-handle { font-size: 11px; color: var(--text-3); }
+    .sub-link-arrow  { margin-left: auto; opacity: 0; transition: opacity .15s, transform .15s; }
+    .sub-link:hover .sub-link-arrow { opacity: 1; transform: translateX(3px); }
+
+    /* ─── FOOTER ────────────────────────────────────── */
+    .footer { margin-top: 32px; animation: fadeUp .6s .55s both; }
+    .footer-email {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--text-2);
+      text-decoration: none;
+      padding: 10px 20px; border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: color .2s, border-color .2s, transform .2s;
+      cursor: none;
+    }
+    .footer-email:hover { color: var(--red); border-color: var(--red); transform: translateY(-2px); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (min-width: 768px) {
+  .page {
+    max-width: 700px; /* Further increase for larger screens */
+  }
+  
+  /* Optional: Make profile and text slightly larger on desktop */
+  .profile-name { font-size: 28px; }
+  .bio-text { font-size: 15px; }
+  .card-title { font-size: 17px; }
+}
+  </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- COVER PHOTO -->
+<!--
+  HOW TO ADD A COVER PHOTO:
+  1. Change background-image inline style below, or edit the .cover-wrap CSS above.
+  2. Example: style="background-image: url('my-cover.jpg'); background-size: cover; background-position: center;"
+  The blurred fade at the bottom is automatic.
+-->
+  
+<div class="cover-wrap">
+<a href="https://ibb.co.com/1fM2wgwp"><img src="https://i.ibb.co.com/MDfN3v3j/Firefly.jpg" alt="Firefly" border="0"></a>
+  <!-- Optional: add an <img> or set background-image on .cover-wrap via CSS -->
+</div>
+
+<main class="page">
+
+  <div class="profile">
+    
+    <!--
+      AVATAR (PROFILE PICTURE):
+      Option A — URL image:
+        <div class="avatar-wrap"><img src="https://example.com/photo.jpg" alt="Didarul Islam" /></div>
+
+      Option B — Base64 embedded image (self-contained, works offline):
+        <div class="avatar-wrap"><img src="data:image/jpeg;base64,YOUR_BASE64_HERE" alt="Didarul Islam" /></div>
+
+      Option C — Keep placeholder initials (current default, no image needed):
+        Already shown below.
+    -->
+    <div class="avatar-wrap">
+      <!-- Replace this div with an <img> tag when you have your photo ready -->
+
+      <img src="IMG_2940.jpg" alt="Didarul Islam" />
+      <div class="avatar-placeholder"></div>
+    </div>
+
+    <div class="profile-name">Didarul Islam</div>
+    <div class="profile-handle">@didarulislam.ce</div>
+  </div>
+
+  <div class="bio">
+    <div class="bio-label">About</div>
+    <p class="bio-text">
+      Hey, I'm <strong>Didarul Islam</strong> — a second year undergrad student studying Civil Engineering @BUET. Currently I have a strong interest in structural analysis, design & integrity. Besides, I love anime, literatures, events, monologues & arts.
+    </p>
+    <div class="bio-tags">
+      <span class="bio-tag">Civil Engineering</span>
+      <span class="bio-tag">Content writing</span>
+      <span class="bio-tag">Design</span>
+    </div>
+  </div>
+
+  <div class="links">
+
+    <!-- ══════════════════════════════════════════════
+         INSTAGRAM (expandable)
+         ICON: Replace the <svg> inside .card-icon with any icon you prefer.
+         ══════════════════════════════════════════════ -->
+    <div class="link-group" id="grp-ig">
+      <div class="link-card" onclick="toggle('grp-ig')">
+        <div class="card-icon">
+          <!-- Instagram icon — swap this SVG to change the icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Instagram</div>
+          <div class="card-sub"> tap to expand</div>
+        </div>
+        <div class="card-chevron">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="sub-links">
+        <a href="https://www.instagram.com/didar_ulislamm" target="_blank" rel="noopener" class="sub-link">
+          <div class="sub-link-dot"></div>
+          <span class="sub-link-label">Personal</span>
+          <span class="sub-link-handle">@didar_ulislamm</span>
+          <svg class="sub-link-arrow" viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M2 7h10M8 3l4 4-4 4" stroke="#c0392b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://www.instagram.com/litbydidar" target="_blank" rel="noopener" class="sub-link">
+          <div class="sub-link-dot"></div>
+          <span class="sub-link-label">Literature page</span>
+          <span class="sub-link-handle">@litbydidar</span>
+          <svg class="sub-link-arrow" viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M2 7h10M8 3l4 4-4 4" stroke="#c0392b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <!-- <a href="https://www.instagram.com/centric_bd" target="_blank" rel="noopener" class="sub-link">
+          <div class="sub-link-dot"></div>
+          <span class="sub-link-label">Digital CE based media</span>
+          <span class="sub-link-handle">@centric_bd</span>
+          <svg class="sub-link-arrow" viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M2 7h10M8 3l4 4-4 4" stroke="#c0392b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a> -->
+      </div>
+    </div>
+
+      <div class="link-group" id="grp-fb">
+      <div class="link-card" onclick="toggle('grp-fb')">
+        <div class="card-icon">
+          <!-- fb icon — swap this SVG to change the icon -->
+         <svg viewBox="0 0 24 24" fill="#fff">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Facebook</div>
+          <div class="card-sub"> tap to expand</div>
+        </div>
+        <div class="card-chevron">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="sub-links">
+        <a href="https://www.facebook.com/did6r" target="_blank" rel="noopener" class="sub-link">
+          <div class="sub-link-dot"></div>
+          <span class="sub-link-label">Personal</span>
+          <span class="sub-link-handle">@did6r</span>
+          <svg class="sub-link-arrow" viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M2 7h10M8 3l4 4-4 4" stroke="#c0392b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+         <!--a href="https://www.facebook.com/centricbd" target="_blank" rel="noopener" class="sub-link">
+          <div class="sub-link-dot"></div>
+          <span class="sub-link-label">Digital CE based media</span>
+          <span class="sub-link-handle">@centricbd</span>
+          <svg class="sub-link-arrow" viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M2 7h10M8 3l4 4-4 4" stroke="#c0392b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>  -->
+      </div>
+    </div>
+<!-- ══════════════════════════════════════════════
+     HSC CHEATSHEET
+     ══════════════════════════════════════════════ -->
+<div class="link-group">
+  <a href="https://didnotes.netlify.app" target="_blank" rel="noopener" class="link-card">
+    <div class="card-icon">
+      <!-- Paper/document icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="8" y1="13" x2="16" y2="13"/>
+        <line x1="8" y1="17" x2="16" y2="17"/>
+        <line x1="8" y1="9" x2="10" y2="9"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">HSC Cheatsheet by DIDAR</div>
+      <div class="card-sub">didnotes.netlify.app</div>
+    </div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </a>
+</div>
+<div class="link-group">
+  <a href="https://letter2didar.netlify.app" target="_blank" rel="noopener" class="link-card">
+    <div class="card-icon">
+      <!-- Paper/document icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>  <polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Letter to Didar</div>
+      <div class="card-sub">letter2didar.netlify.app</div>
+    </div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </a>
+</div>
+
+
+
+    <!-- ══════════════════════════════════════════════
+         VSCO
+         ICON: Replace the <svg> inside .card-icon to change icon.
+         ══════════════════════════════════════════════ -->
+    <div class="link-group">
+      <a href="https://vs.co/3geqw1ip" target="_blank" rel="noopener" class="link-card">
+        <div class="card-icon">
+          <!-- VSCO icon — swap this SVG to change the icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="5"/>
+            <circle cx="12" cy="12" r="1.5" fill="#fff" stroke="none"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">VSCO</div>
+          <div class="card-sub">vs.co/3geqw1ip</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         LINKEDIN
+         ICON: Replace the <svg> inside .card-icon to change icon.
+         ══════════════════════════════════════════════ -->
+    <div class="link-group">
+      <a href="https://www.linkedin.com/in/didarul-islam132/" target="_blank" rel="noopener" class="link-card">
+        <div class="card-icon">
+          <!-- LinkedIn icon — swap this SVG to change the icon -->
+          <svg viewBox="0 0 24 24" fill="#fff">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">LinkedIn</div>
+          <div class="card-sub">linkedin.com/in/didarul-islam132</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </a>
+    </div>
+
+     <!-- ══════════════════════════════════════════════
+     YOUTUBE
+     ══════════════════════════════════════════════ -->
+<div class="link-group">
+  <a href="https://www.youtube.com/@didarexplains" target="_blank" rel="noopener" class="link-card">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24" fill="#fff">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">YouTube</div>
+      <div class="card-sub">Didar's Monologue</div>
+    </div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </a>
+</div>
+    
+
+  </div><!-- /links -->
+
+  <footer class="footer">
+    <a href="mailto:didarulislam.ce@gmail.com" class="footer-email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+        <rect x="2" y="4" width="20" height="16" rx="3"/>
+        <path d="M2 7l10 7 10-7"/>
+      </svg>
+      didarulislam.ce@gmail.com
+    </a>
+  </footer>
+
+</main>
+
+<script>
+  /* ─── EXPAND/COLLAPSE ──────────────────────────── */
+  function toggle(id) {
+    const grp = document.getElementById(id);
+    const isOpen = grp.classList.contains('open');
+    document.querySelectorAll('.link-group.open').forEach(g => g.classList.remove('open'));
+    if (!isOpen) grp.classList.add('open');
+  }
+
+  /* ─── RED CURSOR TRACER ────────────────────────── */
+  let mouseX = 0, mouseY = 0;
+let cursorX = 0, cursorY = 0;
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+
+window.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  
+  // Instant snap for the dot
+  dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+});
+
+// Smooth trailing loop for the ring (if you want it to lag gracefully)
+function render() {
+  cursorX += (mouseX - cursorX) * 0.2;
+  cursorY += (mouseY - cursorY) * 0.2;
+  
+  ring.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+  requestAnimationFrame(render);
+}
+render();
+
+  document.addEventListener('mouseleave', () => {
+    dot.style.opacity  = '0';
+    ring.style.opacity = '0';
+  });
+  document.addEventListener('mouseenter', () => {
+    dot.style.opacity  = '1';
+    ring.style.opacity = '.6';
+  });
+
+</script>
+
+</body>
+</html>
